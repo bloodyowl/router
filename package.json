@@ -3,12 +3,12 @@
   "repository" : "https://github.com/bloodyowl/router.git",
   "issues" : "https://github.com/bloodyowl/router/issues",
   "author" : "bloodyowl",
-  "version" : "0.1.0",
+  "version" : "0.1.1",
   "scripts": {
     "test": "tape test/*.js"
   },
   "dependencies" : {
-    "bloody-class" : "~1.0.0"
+    "bloody-class" : "~1.1.0"
   },
   "devDependencies": {
     "tape": "~2.3.2"
