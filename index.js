@@ -1,5 +1,6 @@
 var klass = require("bloody-class")
   , parsers = require("./lib/parsers")
+  , immediate = require("bloody-immediate")
   , _toString = {}.toString
   , isRegExp = function(value){
       return _toString.call(value) == "[object RegExp]"
@@ -7,16 +8,22 @@ var klass = require("bloody-class")
   , parserRE = /\\\{(?:(\w+)\\\:)*(\w+)\\\}/g
   , escapeRE = /([.*+?^=!:$(){}|[\]\/\\])/g
   , _hasOwnProperty = {}.hasOwnProperty
+  , objectCreate = Object.create ||
+      function(object){
+        function K(){}
+        K.prototype = object
+        return new K()
+      }
 
 module.exports = klass.extend({
   constructor : function(){
     this.routes = {}
-    this.parsers = Object.create(this.parsers)
+    this.parsers = objectCreate(this.parsers)
     this.lastRoute = null
   },
   destructor : function(){
     this.routes = {}
-    this.parsers = Object.create(this.parsers)
+    this.parsers = objectCreate(this.parsers)
     this.lastRoute = null
   },
   define : function(type, callback){
@@ -31,18 +38,17 @@ module.exports = klass.extend({
     delete this.routes[type]
   },
   update : function(string, forceUpdate){
+    var key, item, parsed
     if(!forceUpdate && this.lastRoute == string) return
     this.lastRoute = string
-    Object.keys(this.routes)
-      .forEach(function(key){
-        var item = this.routes[key]
-          , parsed = item.parser(string)
+    for(key in this.routes){
+      if(!_hasOwnProperty.call(this.routes, key)) continue
+      ;(function(item){
+        var parsed = item.parser(string)
         if(!parsed) return
-        setTimeout(function(){
-          item.callback.apply(null, parsed)
-        }, 0)
-        return false
-      }, this)
+        immediate.call.apply(null, [item.callback].concat(parsed))
+      })(this.routes[key])
+    }
   },
   parsers : parsers,
   defineParser : function(name, object){
