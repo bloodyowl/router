@@ -3,7 +3,7 @@
   "repository" : "https://github.com/bloodyowl/router.git",
   "issues" : "https://github.com/bloodyowl/router/issues",
   "author" : "bloodyowl",
-  "version" : "0.1.2",
+  "version" : "0.1.3",
   "scripts": {
     "test": "tape test/*.js"
   },
