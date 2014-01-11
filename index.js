@@ -38,7 +38,7 @@ module.exports = klass.extend({
     delete this.routes[type]
   },
   update : function(string, forceUpdate){
-    var key, item, parsed
+    var key
     if(!forceUpdate && this.lastRoute == string) return
     this.lastRoute = string
     for(key in this.routes){
@@ -46,7 +46,9 @@ module.exports = klass.extend({
       ;(function(item){
         var parsed = item.parser(string)
         if(!parsed) return
-        immediate.call.apply(null, [item.callback].concat(parsed))
+        immediate.call(function(){
+          item.callback.apply(null, parsed)
+        })
       })(this.routes[key])
     }
   },
@@ -78,10 +80,14 @@ module.exports = klass.extend({
 
     return function(string){
       var match = string.match(fullRouteRE)
+        , slicedMatch, returnedValue, length
       if(!match) return null
-      return match.slice(1).map(function(item, index){
-        return parsers[paramNames[index]].parser(item)
-      })
+      slicedMatch = match.slice(1)
+      returnedValue = Array(length = slicedMatch.length)
+      while(--length > -1) {
+        returnedValue[length] = parsers[paramNames[length]].parser(slicedMatch[length])
+      }
+      return returnedValue
     }
   }
 })
