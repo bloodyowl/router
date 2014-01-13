@@ -38,7 +38,7 @@ module.exports = klass.extend({
     delete this.routes[type]
   },
   update : function(string, forceUpdate){
-    var key
+    var key, self = this
     if(!forceUpdate && this.lastRoute == string) return
     this.lastRoute = string
     for(key in this.routes){
@@ -47,7 +47,7 @@ module.exports = klass.extend({
         var parsed = item.parser(string)
         if(!parsed) return
         immediate.call(function(){
-          item.callback.apply(null, parsed)
+          item.callback.apply(self, parsed)
         })
       })(this.routes[key])
     }

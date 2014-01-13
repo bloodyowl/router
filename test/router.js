@@ -3,7 +3,7 @@ var tape = require("tape")
 
 tape("router", function(test){
 
-  test.plan(8)
+  test.plan(9)
 
   var myRouter = router.create()
 
@@ -27,6 +27,7 @@ tape("router", function(test){
     test.equal(id, 1, "Converts int using number parser")
     test.equal(n, .45, "Converts floats using number parser")
     test.equal(date, new Date("2013-12-12").toGMTString(), "Converts using custom parser")
+    test.equal(typeof this.lastRoute, "string", "thisValue is router")
   })
 
   myRouter.update("page/foo/foo/bar")
