@@ -104,7 +104,7 @@ myRouter.define("/post/{number:id}", function(id){
   // grab post and init view
 })
 
-listen(window, "hashchange", function(){
+window.addEventListener("hashchange", function(){
   myRouter.update(location.hash.slice(1))
 })
 
